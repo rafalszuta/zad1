@@ -24,10 +24,10 @@ Jeśli użytkownik popełni błąd wpisująć komendy to wychwytywane są nastę
 Opis ramki:
 
 Wysyłana ramka: adres_kamery kod_funkcji argument_funkcji
-Przykład: zad1.exe 0x01 0x30 25\n
-          //odwołanie do kamery nr 1, funkcja MOVE_VERTICAL , kąt_obrotu
+Przykład: zad1.exe 0x01 0x30 25
+ //odwołanie do kamery nr 1, funkcja MOVE_VERTICAL , kąt_obrotu
 
 
 Odbierana ramka: adres_kamery kod_funkcji argument_funkcji, kod_błędu, suma_kontrolna
 Przykład: zad1.exe 0x01 0x30 25 0x00 0xB5 
-          //odwołanie do kamery nr 1, funkcja MOVE_VERTICAL , kąt_obrotu, kod_błędu, suma_kontrolna
+  //odwołanie do kamery nr 1, funkcja MOVE_VERTICAL , kąt_obrotu, kod_błędu, suma_kontrolna
