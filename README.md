@@ -19,12 +19,12 @@ Jeśli użytkownik popełni błąd wpisująć komendy to wychwytywane są nastę
 - 0x02	WRONG_CAMERA_ADDRESS
 - 0x03	WRONG_FUNCTION_CODE
 - 0x04	WRONG_ARGUMENT
-- 0x05    OUT_OF_RANGE_POSITION
+- 0x05 OUT_OF_RANGE_POSITION
 
 Opis ramki:
 
 Wysyłana ramka: adres_kamery kod_funkcji argument_funkcji
-Przykład: zad1.exe 0x01 0x30 25 
+Przykład: zad1.exe 0x01 0x30 25\n
           //odwołanie do kamery nr 1, funkcja MOVE_VERTICAL , kąt_obrotu
 
 
