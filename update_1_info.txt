@@ -1,0 +1,8 @@
+Wprowadzone poprawki:
+- wyœwietlanie pomocy jeœli u¿yto z³ej liczby argumentów lub nie podano takowych
+- zmieni³em dzia³anie programu wg wytycznych(podanie informacji co chcemy zrobiæ, otrzymanie ramki, w trybie -r podajemy otrzyman¹   ramkê, info o rezultacie)
+- zmiana kodowania na UTF-8
+- zastosowanie alternatywy logicznej
+- doda³em sprawdzenie poprawnoœci wpisania sumy kontrolnej
+- mo¿liwoœæ wpisywania wartoœci zarówno w hex i dec
+
