@@ -25,23 +25,11 @@ void Print2(unsigned int a, unsigned int b, unsigned int c, unsigned int d)    /
 
 void Parse(const char *a, unsigned int *b)
 {
-	char * pEnd;
-	*b = strtol(a, &pEnd, 10);
+	*b = strtol(a, NULL, 10);
 	if (*b == 0)
 	{
-		//printf("byla liczba hex\n");
-		*b = strtol(a, &pEnd, 16);
-		//printf("Liczba: %X\n",*b);
+		*b = strtol(a, NULL, 16);
 	}
-
-	else
-	{
-		//("była liczba 10\n");
-		//	printf("Liczba: %X\n", *b);
-	}
-
-
-
 }
 
 void Check(unsigned int a, unsigned int b, unsigned int c, unsigned int *d)   //validation
