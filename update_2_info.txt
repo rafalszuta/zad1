@@ -1,0 +1,6 @@
+
+1. Doda³em walidacjê wpisywanych komend w pierwszym etapie dzia³ania programu - zmieni³em te¿ w tym celu funkcjê Check
+2. Konwersja systemów dzia³a³a, tylko w funkcji wyœwietlaj¹cej ustawi³em format wyœwietlania na 10, a nie 16 dla argumentu- po prostu ¿eby ³atwiej by³o sprawdzaæ jak ktoœ wpisze np. k¹t obrotu kamery o 150 stopni to wtedy bez przeliczania na hex by³o wiadomo ¿e jest OK --ale zmieni³em wg Twojej uwagi ;)
+3. Aby wyeliminowaæ kwestiê problemów z systemami liczbowymi przyj¹³em konwencjê ¿e wartoœci wyœwietlane s¹ zawsze w hex, natomiast mo¿na je wprowadzaæ na 2 rodzaje:
+- w hex: poprzedzone 0x   ,np. 0x01
+- w dec: np. 1
