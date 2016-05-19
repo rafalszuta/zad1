@@ -13,81 +13,98 @@
 using namespace std;
 
 
-void Print(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int e)   //informacja końcowa
+static volatile int camAddress = 0;
+static volatile int functionCode = 0;
+static volatile int argument = 0;
+static volatile int error = 0x00;
+static volatile int userSum = 0;
+static volatile int checkSum=0xFF - camAddress - functionCode - argument;
+
+
+#define SUCCESS 0x00
+#define COMMAND_ERR 0x01
+#define CAMERA_ERR 0x02
+#define FUNCTION_ERR 0x03
+#define ARGUMENT_ERR 0x04
+#define OUT_OF_RANGE_ERR 0x05
+#define CHECKSUM_ERR 0x06
+
+#define CAMERA1 0x01
+#define CAMERA2 0x02
+#define CAMERA3 0x03
+#define CAMERA4 0x04
+
+#define FUN_ON_OFF 0xA
+#define FUN_MOVE_HOR 0x14
+#define FUN_MOVE_VER 0x1E
+
+
+void Print(camAddress, functionCode, argument, checkSum, error)   //informacja końcowa
 {
-	printf("\n0x%02X 0x%02X 0x%02X 0x%02X 0x%02X\n", a, b, c, d, e);
+	printf("\n0x%02X 0x%02X 0x%02X 0x%02X 0x%02X\n", camAddress, functionCode, argument, checkSum, error);
 }
 
-void Print2(unsigned int a, unsigned int b, unsigned int c, unsigned int d)    //wydruk ramki
+void Print2(camAddress, functionCode, argument, checkSum)    //wydruk ramki
 {
-	printf("\n0x%02X 0x%02X 0x%02X 0x%02X\n", a, b, c, d);
+	printf("\n0x%02X 0x%02X 0x%02X 0x%02X\n", camAddress, functionCode, argument, checkSum);
 }
 
-void Parse(const char *a, unsigned int *b)
+void Parse(const char *camAddress, *functionCode)
 {
-	*b = strtol(a, NULL, 10);
-	if (*b == 0)
+	*functionCode = strtol(camAddress, NULL, 10);
+	if (*functionCode == 0)
 	{
-		*b = strtol(a, NULL, 16);
+		*functionCode = strtol(camAddress, NULL, 16);
 	}
 }
 
-void Check(unsigned int a, unsigned int b, unsigned int c, unsigned int *d)   //validation
+void Check(camAddress, functionCode, argument, *error)   //validation
 
 {
-	/*
-	camAddress=a;
-	functionCode =b;
-	argument =c
-	error=d;*/
-
-
-	if (a == 0x01 || a == 0x02 || a == 0x03 || a == 0x04)   //validating camera address
+	if (camAddress == CAMERA1 || camAddress == CAMERA2 || camAddress == CAMERA3 || camAddress == CAMERA4)   //validating camera address
 	{
-		if (b == 0xA || b == 0x14 || b == 0x1E)   //validating function code
+		if (functionCode == FUN_ON_OFF || functionCode == FUN_MOVE_HOR || functionCode == FUN_MOVE_VER)   //validating function code
 		{
-			if (b == 0xA && (c == 0 || c == 0x01))   //ON/OFF function
+			if (functionCode == FUN_ON_OFF && (argument == 0 || argument == 0x01))   //ON/OFF function
 			{
-				*d = 0x00;
+				*error = SUCCESS;
 			}
 
-			if (b == 0xA && c != 0x00 && c != 0x01)
+			if (functionCode == FUN_ON_OFF && argument != 0x00 && argument != 0x01)
 			{
-				*d = 0x04;
+				*error = ARGUMENT_ERR;
 			}
 
-			if (b == 0x14 && (c < 0xC8) && (c >  0x00))   //MOVE_HORIZONTAL function
+			if (functionCode == FUN_MOVE_HOR && (argument < 0xC8) && (argument >  0x00))   //MOVE_HORIZONTAL function
 			{
-				*d = 0x00;
+				*error = SUCCESS;
 			}
 
-			if (b == 0x14 && (c > 0xC8 || c == 0))
+			if (functionCode == FUN_MOVE_HOR && (argument > 0xC8 || argument == 0))
 			{
-				*d = 0x05;
+				*error = OUT_OF_RANGE_ERR;
 			}
 
-			if (b == 0x1E && (c < 0x7D) && (c>  0x00))  //MOVE_VERTICAL function
+			if (functionCode == FUN_MOVE_VER && (argument < 0x7D) && (argument>  0x00))  //MOVE_VERTICAL function
 			{
-				*d = 0x00;
+				*error = SUCCESS;
 			}
 
-			if (b == 0x1E && (c > 0x7D || c == 0x00))
+			if (functionCode == FUN_MOVE_VER && (argument > 0x7D || argument == 0x00))
 			{
-				*d = 0x05;
+				*error = OUT_OF_RANGE_ERR;
 			}
 		}
 
 		else
 		{
-			*d = 0x03;
+			*error= FUNCTION_ERR;
 		}
 	}
 	else
 	{
-		*d = 0x02;
+		*error = CAMERA_ERR;
 	}
-
-
 
 }
 
@@ -159,18 +176,10 @@ int main(int argc, char * argv[])
 	{
 		if (argc == 4)
 		{
-			unsigned int error = 0x00;    //errror code
-			unsigned int camAddress = 0;
-			unsigned int functionCode = 0;
-			unsigned int argument = 0;
-
 			Parse(argv[1], &camAddress);
 			Parse(argv[2], &functionCode);
 			Parse(argv[3], &argument);
 
-	
-
-			unsigned int checkSum = 0xFF - camAddress - functionCode - argument;
 
 			if (checkSum > 0xFF)   //if checkSum is out of range
 			{
@@ -180,7 +189,7 @@ int main(int argc, char * argv[])
 			Check(camAddress, functionCode, argument, &error);
 
 
-			if (error == 0x00)
+			if (error == SUCCESS)
 			{
 
 				Print2(camAddress, functionCode, argument, checkSum);
@@ -188,7 +197,6 @@ int main(int argc, char * argv[])
 			else
 			{
 				printf("Podales bledna komende!\n");
-				system("Pause");
 				Instruction();
 			}
 		}
@@ -198,19 +206,13 @@ int main(int argc, char * argv[])
 
 		if (argc == 6 && text == "-r")
 		{
-			unsigned int error = 0x00;    //errror code
-			unsigned int camAddress = 0;
-			unsigned int functionCode = 0;
-			unsigned int argument = 9;
-			unsigned int userSum = 0;//checkSum writed by user
-			
 
 			Parse(argv[2], &camAddress);
 			Parse(argv[3], &functionCode);
 			Parse(argv[4], &argument);
 			Parse(argv[5], &userSum);
 
-			unsigned int checkSum = 0xFF - camAddress - functionCode - argument;
+			
 			if (checkSum > 0xFF)   //if checkSum is out of range
 			{
 				checkSum = 0xFF;
@@ -224,7 +226,7 @@ int main(int argc, char * argv[])
 			}
 			else
 			{
-				error = 0x06;
+				error = CHECKSUM_ERR;
 				Print(camAddress, functionCode, argument, checkSum, error);
 			}
 		}
